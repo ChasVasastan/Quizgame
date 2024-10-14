@@ -146,7 +146,6 @@ function submitButton() {
     checkInput();
 }
 
-
 function nextQuestion() {
     score += timeout;
     timeout = 30;
@@ -174,6 +173,9 @@ function checkInput() {
         if (userAnswer === questions[question].correctAnswer) {
             nextQuestion();
         } else {
+            selectedOption.disabled = true;
+            selectedOption.checked = false;
+            selectedOption.parentElement.style.textDecoration = 'line-through';
             revealClue();
         }
         updateScore(score);
