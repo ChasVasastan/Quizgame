@@ -1,6 +1,13 @@
 let timeout = 30;
-function updateClock(timer) {
+let question = 0;
+let timerInterval;
+let score = 0;
+function updateClock() {
     timeout = timeout - 1;
+    if (timeout === 0) {
+        timeout = 31;
+        nextQuestion();
+    }
     document.getElementById('timer').innerText = timeout;
 }
 document.getElementById('timer').innerText = timeout;
@@ -10,12 +17,12 @@ var questions = [
     {
         question: "Vilka färger har Indiens flagga?",
         answers: {
-            a: "Vit, röd, blå, torange",
+            a: "Vit, röd, blå, orange",
             b: "Orange, blå, grön, vit",
-            c: "grön, lila,",
-            d: "Apelsin"
+            c: "Grön, lila, blå, vit",
+            d: "Grön, Orange, lila, blå"
         },
-        correctAnswer: 'a'
+        correctAnswer: 'b'
     },
     {
         question: "Vad heter Indiens nationalfrukt?",
@@ -63,7 +70,7 @@ var questions = [
             a: "Hibiscus",
             b: "Roser",
             c: "Nalini",
-            d: "Lotusblomman"
+            d: "Lotus"
         },
         correctAnswer: 'd'
     },
@@ -95,7 +102,7 @@ var questions = [
             c: "ISRO",
             d: "INSA"
         },
-        correctAnswer: 'b'
+        correctAnswer: 'c'
     },
     {
         question: "Vad heter Indiens premiärminister?",
@@ -120,7 +127,7 @@ function createQuestion(index) {
     for(letter in questions[index].answers) {
         answers.push(
             '<label>'
-                + '<input type="radio" name="question>'+index+'" value="'+letter+'">'
+                + '<input type="radio" name="question'+index+'" value="'+letter+'">'
                 + letter + ': '
                 + questions[index].answers[letter]
             + '</label>'
@@ -129,10 +136,9 @@ function createQuestion(index) {
 
     output.push(
         '<div class="question">' + questions[index].question + '</div>'
-        + '<div class="answers">' + answers.join('') + '</div>'
+        + '<div id="answers">' + answers.join('') + '</div>'
     );
 
-    console.log(questions.length);
     return output.join('');
 }
 
@@ -142,12 +148,47 @@ function showQuestion(index) {
 }
 
 function submitButton() {
+    checkInput();
+}
+
+showQuestion(0);
+
+function nextQuestion() {
     question = question + 1;
-    if (question > questions.length) {
-        question = 0;
-        // TODO: show result
+    timeout = 31;
+    updateClock();
+
+    if (question >= questions.length) {
+        document.getElementById("quiz").innerHTML = "";
+        document.getElementById('results').innerHTML = `Ditt resultat är ${score} updatera sidan för att börja om`;
+        document.getElementById("timer").style.display = 'none';
+        document.getElementById('score').style.display = 'none';
+        document.getElementById('submit').style.display = 'none';
+        return;
     }
     showQuestion(question);
 }
 
-showQuestion(0);
+function checkInput() {
+    let selectedOption = document.querySelector('input[name="question' + question + '"]:checked');
+    
+    if (selectedOption) {
+        let userAnswer = selectedOption.value;
+        console.log(userAnswer);
+
+        if (userAnswer === questions[question].correctAnswer) {
+            score += timeout;
+            nextQuestion();
+        } else {
+            score -= timeout;
+            // revealClue();
+        }
+        updateScore(score);
+    } else {
+        alert("Vänligen välj ett alternativ innan du går vidare!")
+    }
+}
+
+function updateScore(score) { 
+    document.getElementById('score').innerText = `Score: ${score}`;
+}
