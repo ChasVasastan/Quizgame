@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="se">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Frågesport</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="quiz-container">
+        <h1>Frågesport</h1>
+        <div id="questions">
+            <div class="hidden">
+                <p>Vad heter Indiens nationalfrukt?</p>
+                <select>
+                    <option>Mango</option>
+                </select>
+            </div>
+        </div>
+        <div id="timer">
+            <span id="hour">00</span>
+            <span id="minute">00</span>
+            <span id="second">00</span>
+        </div>
+        <div id="choices">
+        </div>
+    </div>
+    <div id="score">poäng: 5</div>
+    <button id="next" disabled>Nästa fråga</button>
+    <script src="script.js"></script>
+</body>
+</html>
