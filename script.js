@@ -1,16 +1,10 @@
 let timeout = 30;
 let question = 0;
-let timerInterval;
 let score = 0;
 function updateClock() {
-    timeout = timeout - 1;
-    if (timeout === 0) {
-        timeout = 31;
-        nextQuestion();
-    }
     document.getElementById('timer').innerText = timeout;
+    timeout = timeout - 1;
 }
-document.getElementById('timer').innerText = timeout;
 setInterval(updateClock, 1000);
 
 var questions = [
@@ -143,6 +137,7 @@ function createQuestion(index) {
 }
 
 function showQuestion(index) {
+    updateClock();
     let html = createQuestion(index);
     quizContainer.innerHTML = html;
 }
@@ -153,10 +148,9 @@ function submitButton() {
 
 
 function nextQuestion() {
+    score += timeout;
+    timeout = 30;
     question = question + 1;
-    timeout = 31;
-    updateClock();
-    
     if (question >= questions.length) {
         document.getElementById("quiz").innerHTML = "";
         document.getElementById('results').innerHTML = `Ditt resultat är ${score} updatera sidan för att börja om`;
@@ -168,19 +162,19 @@ function nextQuestion() {
     showQuestion(question);
 }
 
+function revealClue() {
+    score -= 15;
+}
+
 function checkInput() {
     let selectedOption = document.querySelector('input[name="question' + question + '"]:checked');
-    
+
     if (selectedOption) {
         let userAnswer = selectedOption.value;
-        console.log(userAnswer);
-        
         if (userAnswer === questions[question].correctAnswer) {
-            score += timeout;
             nextQuestion();
         } else {
-            score -= timeout;
-            // revealClue();
+            revealClue();
         }
         updateScore(score);
     } else {
@@ -188,7 +182,7 @@ function checkInput() {
     }
 }
 
-function updateScore(score) { 
+function updateScore(score) {
     document.getElementById('score').innerText = `Score: ${score}`;
 }
 
