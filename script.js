@@ -151,13 +151,12 @@ function submitButton() {
     checkInput();
 }
 
-showQuestion(0);
 
 function nextQuestion() {
     question = question + 1;
     timeout = 31;
     updateClock();
-
+    
     if (question >= questions.length) {
         document.getElementById("quiz").innerHTML = "";
         document.getElementById('results').innerHTML = `Ditt resultat är ${score} updatera sidan för att börja om`;
@@ -175,7 +174,7 @@ function checkInput() {
     if (selectedOption) {
         let userAnswer = selectedOption.value;
         console.log(userAnswer);
-
+        
         if (userAnswer === questions[question].correctAnswer) {
             score += timeout;
             nextQuestion();
@@ -192,3 +191,5 @@ function checkInput() {
 function updateScore(score) { 
     document.getElementById('score').innerText = `Score: ${score}`;
 }
+
+showQuestion(0);
