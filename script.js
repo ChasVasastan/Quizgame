@@ -1,17 +1,11 @@
 let timeout = 30;
 let question = 0;
-let timerInterval;
 let score = 0;
+var timer;
 function updateClock() {
     timeout = timeout - 1;
-    if (timeout === 0) {
-        timeout = 31;
-        nextQuestion();
-    }
     document.getElementById('timer').innerText = timeout;
 }
-document.getElementById('timer').innerText = timeout;
-setInterval(updateClock, 1000);
 
 var questions = [
     {
@@ -117,79 +111,68 @@ var questions = [
 
 ]
 
-var quizContainer = document.getElementById('quiz');
-
 function createQuestion(index) {
-    var output = [];
-    var answers = [];
-
-
+    let output = document.createElement('div');
+    let q = document.createElement('h2');
+    q.innerHTML = questions[index].question;
+    output.append(q);
     for(letter in questions[index].answers) {
-        answers.push(
-            '<label>'
-                + '<input type="radio" name="question'+index+'" value="'+letter+'">'
-                + letter + ': '
-                + questions[index].answers[letter]
-            + '</label>'
-        );
+        let e = document.createElement('button',);
+        e.innerText = questions[index].answers[letter];
+        e.setAttribute('value', letter);
+        e.addEventListener('click', checkInput);
+        output.append(e);
     }
 
-    output.push(
-        '<div class="question">' + questions[index].question + '</div>'
-        + '<div id="answers">' + answers.join('') + '</div>'
-    );
-
-    return output.join('');
+    // Return output object to retain event listener
+    return output;
 }
 
 function showQuestion(index) {
-    let html = createQuestion(index);
-    quizContainer.innerHTML = html;
+    timeout = 30;
+    clearInterval(timer);
+    timer = setInterval(updateClock, 1000);
+    let newQuestion = createQuestion(index);
+    document.getElementById('quiz').replaceChildren(newQuestion);
+    document.getElementById('timer').innerText = timeout;
+    document.getElementById('score').innerText = score;
 }
 
 function submitButton() {
     checkInput();
 }
 
-
 function nextQuestion() {
     question = question + 1;
-    timeout = 31;
-    updateClock();
-    
     if (question >= questions.length) {
-        document.getElementById("quiz").innerHTML = "";
-        document.getElementById('results').innerHTML = `Ditt resultat är ${score} updatera sidan för att börja om`;
-        document.getElementById("timer").style.display = 'none';
-        document.getElementById('score').style.display = 'none';
-        document.getElementById('submit').style.display = 'none';
+        let quiz = document.getElementById("quiz");
+        quiz.innerHTML = `Ditt resultat är ${score}`;
+        let e = document.createElement('button');
+        e.innerText = 'Börja om';
+        e.addEventListener('click', function() { location.reload(); });
+        quiz.parentNode.append(e);
+        document.getElementById("timer").parentElement.style.display = 'none';
+        document.getElementById('score').parentElement.style.display = 'none';
+        clearInterval(timer);
         return;
     }
+
     showQuestion(question);
 }
 
-function checkInput() {
-    let selectedOption = document.querySelector('input[name="question' + question + '"]:checked');
-    
-    if (selectedOption) {
-        let userAnswer = selectedOption.value;
-        console.log(userAnswer);
-        
-        if (userAnswer === questions[question].correctAnswer) {
-            score += timeout;
-            nextQuestion();
-        } else {
-            score -= timeout;
-            // revealClue();
-        }
-        updateScore(score);
-    } else {
-        alert("Vänligen välj ett alternativ innan du går vidare!")
-    }
+function revealClue() {
 }
 
-function updateScore(score) { 
-    document.getElementById('score').innerText = `Score: ${score}`;
+function checkInput() {
+    if (this.value === questions[question].correctAnswer) {
+        score += timeout;
+        nextQuestion();
+    } else {
+        score -= 20;
+        this.disabled = true;
+        revealClue();
+    }
+    document.getElementById('score').innerText = score;
 }
 
 showQuestion(0);
