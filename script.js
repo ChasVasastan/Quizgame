@@ -249,27 +249,25 @@ function checkInput() {
         scoreElement.style.color = 'green'
         setTimeout(() => {
            scoreElement.style.color = '' 
-        }, 2000);
+        }, 1000);
 
         nextQuestion();
     } else {
         scoreElement.style.color = 'red'
         setTimeout(() => {
            scoreElement.style.color = '' 
-        }, 2000);
+        }, 1000);
 
         score -= 20;
         this.disabled = true;
     }
    scoreElement.innerText = score;
 
-   // Nedan är test för "score"-funktion
-
    scoreElement.classList.add('animate-score');
     
     setTimeout(() => {
         scoreElement.classList.remove('animate-score');
-    }, 300);
+    }, 1000);
 }
 
 showQuestion(0);
