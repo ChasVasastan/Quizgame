@@ -2,9 +2,18 @@ let timeout = 30;
 let question = 0;
 let score = 0;
 var timer;
+let timerElement = document.getElementById('timer')
+
 function updateClock() {
     timeout = timeout - 1;
-    document.getElementById('timer').innerText = timeout;
+    showHints(timeout, question)
+    timerElement.innerText = timeout;
+
+    if (timeout <= 6) {
+        timerElement.style.color='red';
+    }
+
+    if (timeout < 0) nextQuestion()
 }
 
 var questions = [
@@ -16,7 +25,12 @@ var questions = [
             c: "Grön, lila, blå, vit",
             d: "Grön, Orange, lila, blå"
         },
-        correctAnswer: 'b'
+        correctAnswer: 'b',
+        hints: {
+            a: "Orange",
+            b: "Blå",
+            c: "Grön"
+        }
     },
     {
         question: "Vad heter Indiens nationalfrukt?",
@@ -26,7 +40,12 @@ var questions = [
             c: "Banan",
             d: "Apelsin"
         },
-        correctAnswer: 'a'
+        correctAnswer: 'a',
+        hints: {
+            a: "!= orange",
+            b: "Gul",
+            c: "!= avlång"
+        }
     },
     {
         question: "Vad heter Indiens nationaldjur?",
@@ -36,7 +55,12 @@ var questions = [
             c: "Tiger",
             d: "Leopard"
         },
-        correctAnswer: 'c'
+        correctAnswer: 'c',
+        hints: {
+            a: "!= vänlig",
+            b: "!= flockdjur",
+            c: "Randig"
+        }
     },
     {
         question: "Vad heter Indiens största religion?",
@@ -46,7 +70,12 @@ var questions = [
             c: "Hinduism",
             d: "Buddism"
         },
-        correctAnswer: 'c'
+        correctAnswer: 'c',
+        hints: {
+            a: "!= †",
+            b: "Cyklisk tidsuppfattning",
+            c: "Brahma, Vishnu, Shiva"
+        }
     },
     {
         question: "Vad heter Indiens nationalrätt?",
@@ -56,7 +85,12 @@ var questions = [
             c: "Chicken tandoori",
             d: "Ingen bestämd"
         },
-        correctAnswer: 'd'
+        correctAnswer: 'd',
+        hints: {
+            a: "!= ingefära",
+            b: "!= bröd",
+            c: "!= kyckling"
+        }
     },
     {
         question: "Vad heter Indiens nationalblomma?",
@@ -66,7 +100,12 @@ var questions = [
             c: "Nalini",
             d: "Lotus"
         },
-        correctAnswer: 'd'
+        correctAnswer: 'd',
+        hints: {
+            a: "Rimmar != loser",
+            b: "Symboliserar visom och utveckling",
+            c: "Har inte 'I' i namnet"
+        }
     },
     {
         question: "Vilket är det officiella språket i Indien?",
@@ -76,7 +115,12 @@ var questions = [
             c: "Hindi",
             d: "Engelska"
         },
-        correctAnswer: 'c'
+        correctAnswer: 'c',
+        hints: {
+            a: "Slutar på 'I'",
+            b: "Har != 'a' i namnet",
+            c: "Rimmar på bindi"
+        }
     },
     {
         question: "Vem är rikast i Indien?",
@@ -86,7 +130,12 @@ var questions = [
             c: "Lakshmi Mittal",
             d: "Mukesh Ambani"
         },
-        correctAnswer: 'd'
+        correctAnswer: 'd',
+        hints: {
+            a: "Han är god för 106 miljarder dollar",
+            b: "Född i Yemen",
+            c: "Hans förnamn slutar på 'esh'"
+        }
     },
     {
         question: "Vad heter Indiens rymdprogram?",
@@ -96,7 +145,12 @@ var questions = [
             c: "ISRO",
             d: "INSA"
         },
-        correctAnswer: 'c'
+        correctAnswer: 'c',
+        hints: {
+            a: "Börjar på 'I'",
+            b: "Slutar != på 'A'",
+            c: "Indian Space Research Organisation"
+        }
     },
     {
         question: "Vad heter Indiens premiärminister?",
@@ -106,18 +160,24 @@ var questions = [
             c: "Droupadi Murmu",
             d: "Heeraben Modi"
         },
-        correctAnswer: 'b'
+        correctAnswer: 'b',
+        hints: {
+            a: "2014",
+            b: "Modi",
+            c: "N"
+        }
     }
 
 ]
 
 function createQuestion(index) {
-    let output = document.createElement('div');
     let q = document.createElement('h2');
+    let output = document.createElement('div');
+    output.className = 'question-container'
     q.innerHTML = questions[index].question;
     output.append(q);
-    for(letter in questions[index].answers) {
-        let e = document.createElement('button',);
+    for (letter in questions[index].answers) {
+        let e = document.createElement('button');
         e.innerText = questions[index].answers[letter];
         e.setAttribute('value', letter);
         e.addEventListener('click', checkInput);
@@ -143,13 +203,16 @@ function submitButton() {
 }
 
 function nextQuestion() {
+    timerElement.style.color='black';
+
     question = question + 1;
     if (question >= questions.length) {
+        clearHints()
         let quiz = document.getElementById("quiz");
         quiz.innerHTML = `Ditt resultat är ${score}`;
         let e = document.createElement('button');
         e.innerText = 'Börja om';
-        e.addEventListener('click', function() { location.reload(); });
+        e.addEventListener('click', function () { location.reload(); });
         quiz.parentNode.append(e);
         document.getElementById("timer").parentElement.style.display = 'none';
         document.getElementById('score').parentElement.style.display = 'none';
@@ -157,22 +220,56 @@ function nextQuestion() {
         return;
     }
 
+    clearHints()
     showQuestion(question);
 }
 
-function revealClue() {
+function showHints(seconds, index) {
+    if (seconds === 20) {
+        document.getElementById('hint1').innerText = questions[index].hints.a;
+    } else if (seconds === 15) {
+        document.getElementById('hint2').innerText = questions[index].hints.b;
+    } else if (seconds === 10) {
+        document.getElementById('hint3').innerText = questions[index].hints.c;
+    }
+}
+
+function clearHints() {
+    document.getElementById('hint1').innerHTML = ''
+    document.getElementById('hint2').innerHTML = ''
+    document.getElementById('hint3').innerHTML = ''
 }
 
 function checkInput() {
+    let scoreElement = document.getElementById('score')
+    
     if (this.value === questions[question].correctAnswer) {
         score += timeout;
+
+        scoreElement.style.color = 'green'
+        setTimeout(() => {
+           scoreElement.style.color = '' 
+        }, 2000);
+
         nextQuestion();
     } else {
+        scoreElement.style.color = 'red'
+        setTimeout(() => {
+           scoreElement.style.color = '' 
+        }, 2000);
+
         score -= 20;
         this.disabled = true;
-        revealClue();
     }
-    document.getElementById('score').innerText = score;
+   scoreElement.innerText = score;
+
+   // Nedan är test för "score"-funktion
+
+   scoreElement.classList.add('animate-score');
+    
+    setTimeout(() => {
+        scoreElement.classList.remove('animate-score');
+    }, 300);
 }
 
 showQuestion(0);

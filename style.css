@@ -1,6 +1,85 @@
-#quiz-container {
+body {
+    background-color: antiquewhite;
+    font-family: "Poppings", sans-serif;
+    max-width: 7   
+}
+
+button {
+    display: inline-block;
+    background-color: aliceblue;
+    border: none;
+    padding: 1vw;
+    margin: 1vw;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1.4vw;
+    box-sizing: border-box;
+}
+
+.question-container > button {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.quiz-content {
+    display: flex;
+    justify-content: flex;
+    align-items: center;
     max-width: 600px;
     margin: 0 auto;
-    text-align: center;
-    background-color: beige;
+    flex-direction: column;
+}
+
+.peripherals {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.peripherals div {
+    margin-top: 1vh;
+    font-size: 2vh;
+}
+
+.hint-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+li {
+    list-style: none;
+}
+
+h1 {
+    font-size: 5vw;
+    color: orange; /*add gradient*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+
+#hint1 {
+    color: orange;
+}
+
+#hint2 {
+    color: blue;
+}
+
+#hint3 {
+    color: green;
+}
+
+/* test för "score" funktion */
+#score {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.animate-score {
+    transform: scale(2);
 }
